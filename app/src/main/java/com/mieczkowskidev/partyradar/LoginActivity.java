@@ -1,5 +1,6 @@
 package com.mieczkowskidev.partyradar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -16,9 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mieczkowskidev.partyradar.Objects.User;
 
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import rx.Subscriber;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * A login screen that offers login via email/password.
@@ -59,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
             changeVisibility(rePasswordEditText, GONE);
             changeVisibility(radarShortImage, GONE);
             changeVisibility(registerButton, VISIBLE);
+            clearEditText();
+            emailEditText.requestFocus();
         } else {
             super.onBackPressed();
         }
@@ -98,6 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                 changeVisibility(rePasswordEditText, VISIBLE);
                 changeVisibility(radarShortImage, VISIBLE);
                 changeVisibility(registerButton, GONE);
+                clearEditText();
+                loginEditText.requestFocus();
             }
         });
     }
@@ -118,8 +123,22 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void clearEditText() {
+        loginEditText.setText("");
+        loginEditText.setError(null);
+        emailEditText.setText("");
+        emailEditText.setError(null);
+        passwordEditText.setText("");
+        passwordEditText.setError(null);
+        rePasswordEditText.setText("");
+        rePasswordEditText.setError(null);
+
+    }
+
     private void loginFlow() {
         Toast.makeText(this, "Hello login here", Toast.LENGTH_SHORT).show();
+        logoutUser();
+        startMainActivity();
     }
 
     private void registerFlow() {
@@ -184,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void createUser(){
+    private void createUser() {
         Log.d(TAG, "createUser()");
 
         String username = loginEditText.getText().toString();
@@ -196,36 +215,87 @@ public class LoginActivity extends AppCompatActivity {
         registerUserOnServer(user);
     }
 
-    private void registerUserOnServer(User user){
+    private void registerUserOnServer(User user) {
         Log.d(TAG, "registerUserOnServer()");
 
-        Gson gson = new GsonBuilder().create();
+        RestClient restClient = new RestClient();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        ServerInterface serverInterface = retrofit.create(ServerInterface.class);
+        serverInterface.registerUserRetro(user, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                Log.d(TAG, "success() called with: " + "user = [" + user + "], response = [" + response + "]");
+            }
 
-        serverInterface.registerUser(user)
-                .subscribe(new Subscriber<User>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted registerUserOnServer");
-                    }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "failure() called with: " + "error = [" + error.getUrl() + "]");
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError registerUserOnServer");
+            }
+        });
 
-                    }
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Constants.BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        ServerInterface serverInterface = retrofit.create(ServerInterface.class);
+//
+//        Call<Response> call = serverInterface.logoutUser();
+//        call.enqueue(new Callback<Response>() {
+//            @Override
+//            public void onResponse(Response<Response> response, Retrofit retrofit) {
+//                Log.d(TAG, "onResponse registerUserOnServer: " + response.message() + ", " + response.code());
+//                Log.d(TAG, "onResponse registerUserOnServer: " + retrofit.baseUrl().url().toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t) {
+//                Log.e(TAG, "onFailure registerUserOnServer " + t.getMessage() + ", " + t.getCause());
+//
+//            }
+//        });
+//        Call<User> call = serverInterface.registerUserRetro(user);
+//        call.enqueue(new Callback<User>() {
+//            @Override
+//            public void onResponse(Response<User> response, Retrofit retrofit) {
+//                Log.d(TAG, "onResponse registerUserOnServer: " + response.message() + ", " + response.code());
+//                Log.d(TAG, "onResponse registerUserOnServer: " + retrofit.baseUrl().url().toString());
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t) {
+//                Log.e(TAG, "onFailure registerUserOnServer " + t.getMessage() + ", " + t.getCause());
+//
+//            }
+//        });
 
-                    @Override
-                    public void onNext(User user) {
-                        Log.d(TAG, "onNext registerUserOnServer");
+    }
 
-                    }
-                });
+    private void startMainActivity(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void logoutUser() {
+        Log.d(TAG, "logoutUser() called with: " + "");
+
+        RestClient restClient = new RestClient();
+
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
+
+        serverInterface.logoutUser(new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "success() called with: " + "response = [" + response + "], response2 = [" + response2 + "]");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "failure() called with: " + error.getMessage() + ", " + error.getResponse() + ", error = [" + error.getUrl() + "]");
+            }
+        });
     }
 }
