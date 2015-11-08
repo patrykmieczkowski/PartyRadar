@@ -3,7 +3,7 @@ package com.mieczkowskidev.partyradar;
 import android.widget.EditText;
 
 /**
- * Created by Patryk Mieczkowski on 2015-11-08.
+ * Created by Patryk Mieczkowski on 2015-11-08
  */
 public class LoginManager {
 

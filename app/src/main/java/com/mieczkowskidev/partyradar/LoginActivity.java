@@ -12,6 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mieczkowskidev.partyradar.Objects.User;
+
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import rx.Subscriber;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -171,7 +179,53 @@ public class LoginActivity extends AppCompatActivity {
                 focusView.requestFocus();
             } else {
                 Log.d(TAG, "formula is valid!");
+                createUser();
             }
         }
+    }
+
+    private void createUser(){
+        Log.d(TAG, "createUser()");
+
+        String username = loginEditText.getText().toString();
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        User user = new User(username, email, password);
+
+        registerUserOnServer(user);
+    }
+
+    private void registerUserOnServer(User user){
+        Log.d(TAG, "registerUserOnServer()");
+
+        Gson gson = new GsonBuilder().create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        ServerInterface serverInterface = retrofit.create(ServerInterface.class);
+
+        serverInterface.registerUser(user)
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted registerUserOnServer");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError registerUserOnServer");
+
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        Log.d(TAG, "onNext registerUserOnServer");
+
+                    }
+                });
     }
 }

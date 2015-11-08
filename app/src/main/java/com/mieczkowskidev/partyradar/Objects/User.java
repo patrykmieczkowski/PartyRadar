@@ -1,7 +1,7 @@
 package com.mieczkowskidev.partyradar.Objects;
 
 /**
- * Created by Patryk Mieczkowski on 2015-11-08.
+ * Created by Patryk Mieczkowski on 2015-11-08
  */
 public class User {
 
