@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView registerButton;
     private EditText loginEditText, emailEditText, passwordEditText, rePasswordEditText;
+    private ImageView radarShortImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             loginButton.setText(R.string.login_label_text);
             changeVisibility(loginEditText, GONE);
             changeVisibility(rePasswordEditText, GONE);
+            changeVisibility(radarShortImage, GONE);
             changeVisibility(registerButton, VISIBLE);
         } else {
             super.onBackPressed();
@@ -56,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton = (Button) findViewById(R.id.login_button);
         registerButton = (TextView) findViewById(R.id.register_button);
+        radarShortImage = (ImageView) findViewById(R.id.radar_short_image);
     }
 
     private void setListeners() {
@@ -74,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginButton.setText(R.string.new_register_button);
                 changeVisibility(loginEditText, VISIBLE);
                 changeVisibility(rePasswordEditText, VISIBLE);
+                changeVisibility(radarShortImage, VISIBLE);
                 changeVisibility(registerButton, GONE);
             }
         });
