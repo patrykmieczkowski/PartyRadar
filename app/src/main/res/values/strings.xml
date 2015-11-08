@@ -11,4 +11,7 @@
     <string name="new_register_button">Register</string>
     <string name="register_button">New here? Click to register!</string>
 
+    <string name="formula_empty_error">Cannot be empty</string>
+    <string name="formula_password_error">Password must match</string>
+
 </resources>
