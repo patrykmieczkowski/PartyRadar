@@ -4,5 +4,11 @@
     <!-- Strings related to login -->
     <string name="email_label_text">Email</string>
     <string name="password_label_text">Password</string>
+    <string name="re_password_label_text">Confirm Password</string>
+    <string name="login_label_text">Login</string>
+
+    <string name="login_button">Login</string>
+    <string name="new_register_button">Register</string>
+    <string name="register_button">New here? Click to register!</string>
 
 </resources>
