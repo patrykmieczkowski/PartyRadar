@@ -8,7 +8,6 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Headers;
 import retrofit.http.POST;
-import rx.Observable;
 
 /**
  * Created by Patryk Mieczkowski on 2015-11-08
@@ -20,6 +19,9 @@ public interface ServerInterface {
 
     @POST("/register")
     void registerUserRetro(@Body User user, Callback<User> callback);
+
+    @POST("/login")
+    void loginUser(@Body User user, Callback<User> callback);
 
     @Headers("Authorization: Token 123")
     @GET("/logout")
