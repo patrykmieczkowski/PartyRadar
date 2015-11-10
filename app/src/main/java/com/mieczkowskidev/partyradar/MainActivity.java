@@ -1,11 +1,10 @@
 package com.mieczkowskidev.partyradar;
 
 import android.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.mieczkowskidev.partyradar.Fragments.MapFragment;
+import com.mieczkowskidev.partyradar.Fragments.MainFragment;
 import com.trnql.smart.activity.ActivityEntry;
 import com.trnql.smart.base.SmartCompatActivity;
 import com.trnql.smart.location.AddressEntry;
@@ -29,7 +28,7 @@ public class MainActivity extends SmartCompatActivity {
 
     private void setVisibleFragment(int selectedFragment) {
 
-        MapFragment newFragment = new MapFragment();
+        MainFragment newFragment = new MainFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         transaction.replace(R.id.frame_layout, newFragment);

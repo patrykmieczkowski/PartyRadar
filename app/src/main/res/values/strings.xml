@@ -14,4 +14,6 @@
     <string name="formula_empty_error">Cannot be empty</string>
     <string name="formula_password_error">Password must match</string>
 
+    <string name="google_maps_api_key">AIzaSyBpe0Q2Y0w2hkvDdj2_i5H3YieE3rW62CI</string>
+
 </resources>

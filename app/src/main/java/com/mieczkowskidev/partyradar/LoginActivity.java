@@ -20,6 +20,7 @@ import com.mieczkowskidev.partyradar.Objects.User;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * A login screen that offers login via email/password.
@@ -137,7 +138,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginFlow() {
         Toast.makeText(this, "Hello login here", Toast.LENGTH_SHORT).show();
-        logoutUser();
+//        loginUser();
+//        logoutUser();
         startMainActivity();
     }
 
@@ -222,15 +224,24 @@ public class LoginActivity extends AppCompatActivity {
 
         ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        serverInterface.registerUserRetro(user, new Callback<User>() {
+        serverInterface.registerUser(user, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                Log.d(TAG, "success() called with: " + "user = [" + user + "], response = [" + response + "]");
+                Log.d(TAG, "registerUserOnServer success(): " + response.getStatus() + ", " + response.getReason());
+                Log.d(TAG, "registerUserOnServer success(): " + response.getUrl());
+
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(TAG, "failure() called with: " + "error = [" + error.getUrl() + "]");
+                Log.e(TAG, "registerUserOnServer failure() called with: " + "error = [" + error.getUrl() + "]");
+                Log.e(TAG, "registerUserOnServer failure() called with: " + error.getResponse().getStatus() +
+                        ", " + error.getResponse().getReason() + ", " + error.getResponse().getBody().mimeType());
+
+                String bodyString = new String(((TypedByteArray) error.getBody()).getBytes());
+
+                Log.e(TAG, "registerUserOnServer failure() called with: " + bodyString);
+
 
             }
         });
@@ -277,6 +288,26 @@ public class LoginActivity extends AppCompatActivity {
     private void startMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void loginUser(){
+        Log.d(TAG, "loginUser() called with: " + "");
+
+        RestClient restClient = new RestClient();
+
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
+
+        serverInterface.loginUser(new User("patryk@partyradar.com", "patryk1"), new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                Log.d(TAG, "success() called with: " + "user = [" + user + "], response = [" + response + "]");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
+            }
+        });
     }
 
     private void logoutUser() {

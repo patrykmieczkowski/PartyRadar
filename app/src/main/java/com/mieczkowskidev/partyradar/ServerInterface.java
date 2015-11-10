@@ -14,16 +14,14 @@ import retrofit.http.POST;
  */
 public interface ServerInterface {
 
-//    @POST("register/")
-//    Observable<User> registerUser(@Body User user);
-
+    @Headers("Content-Type: application/json")
     @POST("/register")
-    void registerUserRetro(@Body User user, Callback<User> callback);
-
-    @POST("/login")
-    void loginUser(@Body User user, Callback<User> callback);
+    void registerUser(@Body User user, Callback<User> callback);
 
     @Headers("Authorization: Token 123")
     @GET("/logout")
     void logoutUser(Callback<Response> callback);
+
+    @POST("/login")
+    void loginUser(@Body User user, Callback<User> callback);
 }
