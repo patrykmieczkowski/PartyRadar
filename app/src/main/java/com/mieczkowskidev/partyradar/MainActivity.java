@@ -6,13 +6,13 @@ import android.util.Log;
 
 import com.mieczkowskidev.partyradar.Fragments.MainFragment;
 import com.trnql.smart.activity.ActivityEntry;
-import com.trnql.smart.base.SmartCompatActivity;
+import com.trnql.smart.base.SmartActivity;
 import com.trnql.smart.location.AddressEntry;
 import com.trnql.smart.location.LocationEntry;
 import com.trnql.smart.weather.WeatherEntry;
 import com.trnql.zen.core.AppData;
 
-public class MainActivity extends SmartCompatActivity {
+public class MainActivity extends SmartActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -23,19 +23,13 @@ public class MainActivity extends SmartCompatActivity {
 
         getAppData().setApiKey("3bd5eb7e-64c7-4ff7-ad3b-f8e4ceb21e18");
         AppData.startAllServices(this);
-        setVisibleFragment(Constants.FRAGMENT_MAP);
+//        setVisibleFragment(Constants.FRAGMENT_MAP);
     }
 
-    private void setVisibleFragment(int selectedFragment) {
-
-        MainFragment newFragment = new MainFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.frame_layout, newFragment);
-        transaction.addToBackStack(null);
-
-// Commit the transaction
-        transaction.commit();
+    @Override
+    protected void onDestroy() {
+        AppData.startAllServices(this);
+        super.onDestroy();
     }
 
     @Override
@@ -55,7 +49,7 @@ public class MainActivity extends SmartCompatActivity {
     @Override
     protected void smartWeatherChange(WeatherEntry weather) {
         super.smartWeatherChange(weather);
-        Log.d(TAG, "smartWeatherChange() called with: " + "weather = [" + weather.getAddress() + "]");
+        Log.d(TAG, "smartWeatherChange() called with: " + "weather = [" + weather.getWeatherSummaryAsString() + "]");
     }
 
     @Override
@@ -67,6 +61,19 @@ public class MainActivity extends SmartCompatActivity {
     @Override
     protected void smartLatLngChange(LocationEntry location) {
         super.smartLatLngChange(location);
-        Log.d(TAG, "smartLatLngChange() called with: " + "location = [" + location.getTime() + "]");
+        Log.d(TAG, "smartLatLngChange() called with: " + "location = [" + location.getLatLng().toString() + "]");
+    }
+
+    private void setVisibleFragment(int selectedFragment) {
+        Log.d(TAG, "setVisibleFragment()");
+
+        MainFragment newFragment = new MainFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.frame_layout, newFragment);
+        transaction.addToBackStack(null);
+
+// Commit the transaction
+        transaction.commit();
     }
 }

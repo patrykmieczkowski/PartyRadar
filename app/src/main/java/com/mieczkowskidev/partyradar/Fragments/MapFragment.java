@@ -25,7 +25,7 @@ import com.mieczkowskidev.partyradar.R;
 public class MapFragment extends SupportMapFragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener,
-        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     private final static String TAG = MapFragment.class.getSimpleName();
 
@@ -49,6 +49,7 @@ public class MapFragment extends SupportMapFragment implements
                 .build();
 
         initListeners();
+        addMarkers();
     }
 
     @Override
@@ -91,13 +92,20 @@ public class MapFragment extends SupportMapFragment implements
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.e(TAG, "lat: " + latLng.latitude + ", long: " + latLng.longitude);
+        Log.d(TAG, "lat: " + latLng.latitude + ", long: " + latLng.longitude);
+
+
 
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
 
+        MarkerOptions options = new MarkerOptions().position(latLng);
+        options.title("onMapClicked marker");
+
+        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker));
+        getMap().addMarker(options);
     }
 
     @Override
@@ -113,13 +121,13 @@ public class MapFragment extends SupportMapFragment implements
 
     }
 
-    private void initCamera( Location location ) {
+    private void initCamera(Location location) {
         CameraPosition position = CameraPosition.builder()
-                .target( new LatLng( location.getLatitude(),
-                        location.getLongitude() ) )
-                .zoom( 16f )
-                .bearing( 0.0f )
-                .tilt( 0.0f )
+                .target(new LatLng(location.getLatitude(),
+                        location.getLongitude()))
+                .zoom(16f)
+                .bearing(0.0f)
+                .tilt(0.0f)
                 .build();
 
         getMap().animateCamera(CameraUpdateFactory
@@ -131,18 +139,18 @@ public class MapFragment extends SupportMapFragment implements
 //        getMap().getUiSettings().setZoomControlsEnabled(true);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    private void addMarkers() {
+        Log.d(TAG, "addMarkers()");
 
         getMap().addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
                 .position(new LatLng(50.1083610639509, 19.960406720638275))
-                .title("Party party"));
+                .title("Party party 1"));
 
         getMap().addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
                 .position(new LatLng(50.1089181910328, 19.965937435626984))
-                .title("Party party"));
+                .title("Party party 2"));
 
         getMap().addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
