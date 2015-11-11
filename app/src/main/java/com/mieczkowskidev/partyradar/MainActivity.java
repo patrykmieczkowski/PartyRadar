@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    public void createPostOnServer() {
+    public void createPostOnServer(String description) {
         Log.d(TAG, "createPostOnServer()");
 
         RestClient restClient = new RestClient();
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
         String token = LoginManager.getTokenFromShared(this);
 
-        serverInterface.createPost(token, photoo, "party", Constants.myPosition.latitude, Constants.myPosition.longitude,
+        serverInterface.createPost(token, photoo, description, Constants.myPosition.latitude, Constants.myPosition.longitude,
                 new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {

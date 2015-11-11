@@ -66,7 +66,7 @@ public class CreateEventDialog extends Dialog implements
         createButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        ((MainActivity) activity).createPostOnServer();
+        ((MainActivity) activity).createPostOnServer(descriptionEdit.getText().toString());
 
     }
 
