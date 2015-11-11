@@ -10,6 +10,7 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -26,25 +27,24 @@ public interface ServerInterface {
     @POST("/register")
     void registerUser(@Body User user, Callback<User> callback);
 
-    @Headers("Authorization: Token 7dea74597620aeda66d13d01e895591204f87190")
     @GET("/logout")
-    void logoutUser(Callback<Response> callback);
+    void logoutUser(@Header("Authorization") String token, Callback<Response> callback);
 
     @POST("/login")
-    void loginUser(@Body User user, Callback<Response> callback);
+    void loginUser(@Body User user, Callback<JsonElement> callback);
 
-    @Headers("Authorization: Token 7dea74597620aeda66d13d01e895591204f87190")
     @GET("/get-posts")
-    void getPosts(@Query("lat") Double lat,
+    void getPosts(@Header("Authorization") String token,
+                  @Query("lat") Double lat,
                   @Query("lon") Double lon,
                   @Query("radius") int radius,
                   @Query("time_offset") int time_offset,
                   Callback<JsonElement> callback);
 
     @Multipart
-    @Headers("Authorization: Token 7dea74597620aeda66d13d01e895591204f87190")
     @POST("/submit-post")
-    void createPost(@Part("photo") TypedFile photo,
+    void createPost(@Header("Authorization") String token,
+                    @Part("photo") TypedFile photo,
                     @Part("description") String description,
                     @Part("lat") Double lat,
                     @Part("lon") Double lon,

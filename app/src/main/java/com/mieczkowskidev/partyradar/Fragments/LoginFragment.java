@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.LoginActivity;
 import com.mieczkowskidev.partyradar.LoginManager;
 import com.mieczkowskidev.partyradar.Objects.User;
@@ -83,12 +86,12 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void fillFormula(){
+    private void fillFormula() {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getString(R.string.shared_preferences_user), Context.MODE_PRIVATE);
 
         emailEditText.setText(sharedPreferences.getString(("email"), ""));
-        passwordEditText.setText(sharedPreferences.getString(("password"),""));
+        passwordEditText.setText(sharedPreferences.getString(("password"), ""));
 
     }
 
@@ -169,16 +172,20 @@ public class LoginFragment extends Fragment {
 
         ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        serverInterface.loginUser(user, new Callback<Response>() {
+        serverInterface.loginUser(user, new Callback<JsonElement>() {
             @Override
-            public void success(Response myresponse, Response response) {
+            public void success(JsonElement jsonElement, Response response) {
                 Log.d(TAG, "loginUserOnServer success(): " + response.getStatus() + ", " + response.getReason());
-                Log.d(TAG, "login: " + response.getBody().mimeType() + ", ");
-                for (Header header : response.getHeaders()) {
-                    Log.d(TAG, "login header: " + header.toString());
-                }
-                Log.d(TAG, "response: " + myresponse.getBody().mimeType());
-                Log.d(TAG, "repsonsme: " + myresponse.getReason());
+
+                Log.d(TAG, jsonElement.toString());
+                JsonObject mainObject = jsonElement.getAsJsonObject();
+                String status = mainObject.get("status").toString();
+                String token = mainObject.get("token").toString();
+                Log.d(TAG, "status: " + status + ", token: " + token);
+
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getString(R.string.shared_preferences_user), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString("token", token.replaceAll("\"","")).apply();
+
                 ((LoginActivity) getActivity()).startMainActivity();
             }
 

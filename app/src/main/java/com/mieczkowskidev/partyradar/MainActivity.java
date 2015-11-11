@@ -226,7 +226,9 @@ public class MainActivity extends AppCompatActivity {
         final File photoFiles = new File(file.getAbsolutePath());
         TypedFile photoo = new TypedFile("file:", photoFiles);
 
-        serverInterface.createPost(photoo, "party", Constants.myPosition.latitude, Constants.myPosition.longitude,
+        String token = LoginManager.getTokenFromShared(this);
+
+        serverInterface.createPost(token, photoo, "party", Constants.myPosition.latitude, Constants.myPosition.longitude,
                 new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {
@@ -242,9 +244,9 @@ public class MainActivity extends AppCompatActivity {
                             showSnackbar("Connection error!");
                         } else {
                             Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
-                            createEventDialog.dismiss();
                             showSnackbar("An error occurred, please try again!");
                         }
+                        createEventDialog.dismiss();
                     }
                 });
 
@@ -257,7 +259,9 @@ public class MainActivity extends AppCompatActivity {
 
         ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        serverInterface.logoutUser(new Callback<Response>() {
+        String token = LoginManager.getTokenFromShared(this);
+
+        serverInterface.logoutUser(token, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 Log.d(TAG, "success() called with: " + "response = [" + response + "], response2 = [" + response2 + "]");

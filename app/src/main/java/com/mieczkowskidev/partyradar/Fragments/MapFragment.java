@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.Deserializer.EventDeserializer;
+import com.mieczkowskidev.partyradar.LoginManager;
 import com.mieczkowskidev.partyradar.MainActivity;
 import com.mieczkowskidev.partyradar.Objects.Event;
 import com.mieczkowskidev.partyradar.Objects.User;
@@ -194,7 +195,9 @@ public class MapFragment extends SupportMapFragment implements
         String info = "Lat: " + String.valueOf(currentLocation.getLatitude());
         Log.d(TAG, info);
 
-        serverInterface.getPosts(currentLocation.getLatitude(), currentLocation.getLongitude(),
+        String token = LoginManager.getTokenFromShared(getActivity());
+        Log.d(TAG, token);
+        serverInterface.getPosts(token, currentLocation.getLatitude(), currentLocation.getLongitude(),
                 50, 10, new Callback<JsonElement>() {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {

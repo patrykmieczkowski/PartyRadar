@@ -36,4 +36,11 @@ public class LoginManager {
         sharedPreferences.edit().putString("email", email).apply();
         sharedPreferences.edit().putString("password", password).apply();
     }
+
+    public static String getTokenFromShared(Context context){
+
+        return "Token " + context.getSharedPreferences
+                (context.getString(R.string.shared_preferences_user), Context.MODE_PRIVATE)
+                .getString("token", "");
+    }
 }
