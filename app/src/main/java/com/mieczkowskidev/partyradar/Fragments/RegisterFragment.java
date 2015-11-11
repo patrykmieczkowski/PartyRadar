@@ -195,14 +195,15 @@ public class RegisterFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error != null) {
+                if (error.getKind() == RetrofitError.Kind.NETWORK || error.getResponse() == null) {
+                    Log.e(TAG, "error register with null");
+                    showSnackbarInLoginActivity(getString(R.string.connection_error));
+                } else {
                     Log.e(TAG, "registerUserOnServer failure() called with: " + "error = [" + error.getUrl() + "]");
                     String errorString = String.valueOf(error.getResponse().getStatus())
                             + ", " + String.valueOf(error.getResponse().getReason());
                     Log.e(TAG, "registerUserOnServer failure() called with: " + errorString);
                     showSnackbarInLoginActivity(errorString);
-                } else {
-                    Log.e(TAG, "error register with null");
                 }
             }
         });

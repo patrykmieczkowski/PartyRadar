@@ -1,5 +1,7 @@
 package com.mieczkowskidev.partyradar;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.EditText;
 
 import java.util.regex.Matcher;
@@ -25,5 +27,13 @@ public class LoginManager {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(enteredEmail);
         return matcher.matches();
+    }
+
+    public static void saveDataToSharedPreferences(Context context, String email, String password){
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_user), Context.MODE_PRIVATE);
+
+        sharedPreferences.edit().putString("email", email).apply();
+        sharedPreferences.edit().putString("password", password).apply();
     }
 }

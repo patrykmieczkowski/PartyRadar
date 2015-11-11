@@ -1,7 +1,12 @@
 package com.mieczkowskidev.partyradar;
 
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -41,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
 
         getViews();
         startLoginFragment();
+
+        if (!isOnline()) {
+            showAlertNoInternet();
+        }
     }
 
     @Override
@@ -118,4 +127,34 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void showAlertNoInternet() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Connection error")
+                .setMessage("Please turn on internet connection and try again!")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .create();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+        alertDialog.show();
+
+    }
 }

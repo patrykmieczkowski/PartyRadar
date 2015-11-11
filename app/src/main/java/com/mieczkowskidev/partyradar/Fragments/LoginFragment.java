@@ -1,6 +1,8 @@
 package com.mieczkowskidev.partyradar.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ public class LoginFragment extends Fragment {
 
         getViews(view);
         setListeners();
+        fillFormula();
         return view;
     }
 
@@ -77,6 +80,15 @@ public class LoginFragment extends Fragment {
                 passwordEditText.setError(null);
             }
         });
+
+    }
+
+    private void fillFormula(){
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getString(R.string.shared_preferences_user), Context.MODE_PRIVATE);
+
+        emailEditText.setText(sharedPreferences.getString(("email"), ""));
+        passwordEditText.setText(sharedPreferences.getString(("password"),""));
 
     }
 
@@ -143,6 +155,8 @@ public class LoginFragment extends Fragment {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
+        LoginManager.saveDataToSharedPreferences(getActivity(), email, password);
+
         User user = new User(email, password);
 
         loginUserOnServer(user);
@@ -172,6 +186,7 @@ public class LoginFragment extends Fragment {
             public void failure(RetrofitError error) {
                 if (error.getKind() == RetrofitError.Kind.NETWORK || error.getResponse() == null) {
                     Log.e(TAG, "error register with null");
+                    showSnackbarInLoginActivity(getString(R.string.connection_error));
                 } else {
                     Log.e(TAG, "loginUserOnServer failure() called with: " + "error = [" + error.getUrl() + "]");
                     String errorString = String.valueOf(error.getResponse().getStatus())

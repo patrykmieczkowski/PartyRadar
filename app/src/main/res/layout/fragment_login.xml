@@ -24,7 +24,6 @@
             android:hint="@string/email_label_text"
             android:inputType="textEmailAddress"
             android:padding="@dimen/login_edit_text_padding"
-            android:text="a@a.pl"
             android:textSize="@dimen/login_text_size" />
 
         <EditText
@@ -41,7 +40,6 @@
             android:hint="@string/password_label_text"
             android:inputType="textPassword"
             android:padding="@dimen/login_edit_text_padding"
-            android:text="aaaaaa"
             android:textSize="@dimen/login_text_size" />
 
         <Button

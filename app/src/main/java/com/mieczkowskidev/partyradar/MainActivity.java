@@ -13,14 +13,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.mieczkowskidev.partyradar.Dialogs.CreateEventDialog;
-import com.mieczkowskidev.partyradar.Fragments.MapFragment;
-import com.mieczkowskidev.partyradar.Objects.Event;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -35,7 +35,7 @@ import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 
-public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -61,16 +61,34 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             createEventDialog = new CreateEventDialog(this);
-            createEventDialog.setOnDismissListener(this);
             createEventDialog.show();
             loadImage();
         }
     }
 
 
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        showSnackbar("Created!");
+//    }
+
+
     @Override
-    public void onDismiss(DialogInterface dialog) {
-        showSnackbar("Added blabla");
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.logout:
+                logoutUser();
+                break;
+        }
+        return true;
     }
 
     private void getViews() {
@@ -202,10 +220,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             fOut.close();
             b.recycle();
             out.recycle();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         final File photoFiles = new File(file.getAbsolutePath());
-        TypedFile photoo = new TypedFile("file:",photoFiles);
+        TypedFile photoo = new TypedFile("file:", photoFiles);
 
         serverInterface.createPost(photoo, "party", Constants.myPosition.latitude, Constants.myPosition.longitude,
                 new Callback<Response>() {
@@ -218,11 +237,46 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
-                        createEventDialog.dismiss();
-                        showSnackbar("An error occurred, please try again!");
+                        if (error.getKind() == RetrofitError.Kind.NETWORK || error.getResponse() == null) {
+                            Log.e(TAG, "error register with null");
+                            showSnackbar("Connection error!");
+                        } else {
+                            Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
+                            createEventDialog.dismiss();
+                            showSnackbar("An error occurred, please try again!");
+                        }
                     }
                 });
+
+    }
+
+    private void logoutUser() {
+        Log.d(TAG, "logoutUser()");
+
+        RestClient restClient = new RestClient();
+
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
+
+        serverInterface.logoutUser(new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                Log.d(TAG, "success() called with: " + "response = [" + response + "], response2 = [" + response2 + "]");
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getKind() == RetrofitError.Kind.NETWORK || error.getResponse() == null) {
+                    Log.e(TAG, "error register with null");
+                    showSnackbar("Connection error!");
+                } else {
+                    Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
+                    showSnackbar("Connection error!");
+                }
+            }
+        });
 
     }
 

@@ -26,7 +26,7 @@ public interface ServerInterface {
     @POST("/register")
     void registerUser(@Body User user, Callback<User> callback);
 
-    @Headers("Authorization: Token 123")
+    @Headers("Authorization: Token 7dea74597620aeda66d13d01e895591204f87190")
     @GET("/logout")
     void logoutUser(Callback<Response> callback);
 
