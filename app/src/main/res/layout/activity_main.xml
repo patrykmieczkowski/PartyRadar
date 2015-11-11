@@ -5,9 +5,29 @@
     android:layout_height="match_parent"
     tools:context="com.mieczkowskidev.partyradar.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
+    <!--<FrameLayout-->
+        <!--android:id="@+id/frame_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <fragment
+        android:id="@+id/fragment_trnql"
+        android:name="com.mieczkowskidev.partyradar.Fragments.TrnqlFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="100dp"
+        tools:layout="@layout/fragment_trnql"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <fragment
+        android:id="@+id/fragment_map"
+        android:name="com.mieczkowskidev.partyradar.Fragments.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/fragment_trnql" />
 
 </RelativeLayout>
