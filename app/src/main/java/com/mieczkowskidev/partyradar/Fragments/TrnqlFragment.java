@@ -22,7 +22,7 @@ public class TrnqlFragment extends SmartFragment {
 
     private static final String TAG = TrnqlFragment.class.getSimpleName();
 
-    private TextView textView1, textView2;
+    private TextView textView2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,9 +64,7 @@ public class TrnqlFragment extends SmartFragment {
     protected void smartWeatherChange(WeatherEntry weather) {
         super.smartWeatherChange(weather);
         Log.d(TAG, "smartWeatherChange() called with: " + "weather = [" + weather.getWeatherSummaryAsString() + "]");
-        String temp = "Temp: " + String.valueOf(weather.getCurrentTemp()) + ", odczuwalna: " + String.valueOf(weather.getFeelsLikeTemp());
         String calaPogoda = "Calosc: " +  weather.getWeatherSummaryAsString();
-        textView1.setText(temp);
         textView2.setText(calaPogoda);
     }
 
@@ -84,7 +82,6 @@ public class TrnqlFragment extends SmartFragment {
 
     private void getViews(View view) {
 
-        textView1 = (TextView) view.findViewById(R.id.textView);
         textView2 = (TextView) view.findViewById(R.id.textView2);
     }
 

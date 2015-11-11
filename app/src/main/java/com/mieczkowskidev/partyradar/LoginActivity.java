@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.mieczkowskidev.partyradar.Fragments.LoginFragment;
 import com.mieczkowskidev.partyradar.Fragments.RegisterFragment;
 import com.mieczkowskidev.partyradar.Objects.User;
 
@@ -39,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getViews();
-        startRegisterFragment();
+        startLoginFragment();
     }
 
     @Override
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (MODE == REGISTER) {
             MODE = LOGIN;
-            // change to login
+            startLoginFragment();
         } else {
             super.onBackPressed();
         }
@@ -82,62 +83,39 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void startRegisterFragment() {
+    public void startRegisterFragment() {
         MODE = REGISTER;
 
         RegisterFragment fragment = new RegisterFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         transaction.replace(R.id.login_placeholder, fragment);
+//        transaction.setCustomAnimations(R.anim.abc_shrink_fade_out_from_bottom, R.anim.abc_grow_fade_in_from_bottom);
+
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    public void startLoginFragment() {
+        MODE = LOGIN;
+
+        LoginFragment fragment = new LoginFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.login_placeholder, fragment);
+//        transaction.setCustomAnimations(R.anim.fab_in, R.anim.fab_out);
+
         transaction.addToBackStack(null);
 
         transaction.commit();
 
     }
 
-    private void startMainActivity() {
+    public void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void loginUser() {
-        Log.d(TAG, "loginUser() called with: " + "");
-
-        RestClient restClient = new RestClient();
-
-        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
-
-        serverInterface.loginUser(new User("patryk@partyradar.com", "patryk1"), new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                Log.d(TAG, "success() called with: " + "user = [" + user + "], response = [" + response + "]");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
-            }
-        });
-    }
-
-    private void logoutUser() {
-        Log.d(TAG, "logoutUser() called with: " + "");
-
-        RestClient restClient = new RestClient();
-
-        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
-
-        serverInterface.logoutUser(new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                Log.d(TAG, "success() called with: " + "response = [" + response + "], response2 = [" + response2 + "]");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "failure() called with: " + error.getMessage() + ", " + error.getResponse() + ", error = [" + error.getUrl() + "]");
-            }
-        });
-    }
 }

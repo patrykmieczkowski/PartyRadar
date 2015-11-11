@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mieczkowskidev.partyradar.MainActivity;
 import com.mieczkowskidev.partyradar.R;
 
 /**
@@ -94,22 +95,26 @@ public class MapFragment extends SupportMapFragment implements
     public void onMapClick(LatLng latLng) {
         Log.d(TAG, "lat: " + latLng.latitude + ", long: " + latLng.longitude);
 
-
+        ((MainActivity) getActivity()).hidePartyInfoLayout();
+        ((MainActivity) getActivity()).showFAB();
 
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
 
-        MarkerOptions options = new MarkerOptions().position(latLng);
-        options.title("onMapClicked marker");
-
-        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker));
-        getMap().addMarker(options);
+//        MarkerOptions options = new MarkerOptions().position(latLng);
+//        options.title("onMapClicked marker");
+//
+//        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker));
+//        getMap().addMarker(options);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        ((MainActivity) getActivity()).showPartyInfoLayout();
+        ((MainActivity) getActivity()).hideFAB();
+
         return false;
     }
 
@@ -136,6 +141,7 @@ public class MapFragment extends SupportMapFragment implements
         getMap().setMapType(GoogleMap.MAP_TYPE_NORMAL);
 //        getMap().setTrafficEnabled(true);
         getMap().setMyLocationEnabled(true);
+        getMap().getUiSettings().setMapToolbarEnabled(true);
 //        getMap().getUiSettings().setZoomControlsEnabled(true);
     }
 

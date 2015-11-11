@@ -1,7 +1,10 @@
 package com.mieczkowskidev.partyradar.Fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

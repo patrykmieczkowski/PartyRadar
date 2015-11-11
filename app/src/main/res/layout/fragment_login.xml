@@ -2,119 +2,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/small_background"
     tools:context=".LoginActivity">
 
-    <!--<ProgressBar-->
-    <!--android:id="@+id/login_progress_bar"-->
-    <!--style="?android:attr/progressBarStyleLarge"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:visibility="visible" />-->
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
-        <RelativeLayout
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/email_label_text"
+            android:inputType="textEmailAddress"
+            android:padding="@dimen/login_edit_text_padding"
+            android:text="a@a.pl"
+            android:textSize="@dimen/login_text_size" />
 
-            <EditText
-                android:id="@+id/email_edit_text"
-                android:layout_width="@dimen/login_edit_text_width"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="150dp"
-                android:background="@drawable/edit_text_background"
-                android:ellipsize="start"
-                android:hint="@string/email_label_text"
-                android:inputType="textEmailAddress"
-                android:padding="@dimen/login_edit_text_padding"
-                android:textSize="@dimen/login_text_size" />
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_edit_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="@dimen/login_edit_text_margins"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/password_label_text"
+            android:inputType="textPassword"
+            android:padding="@dimen/login_edit_text_padding"
+            android:text="aaaaaa"
+            android:textSize="@dimen/login_text_size" />
 
-            <EditText
-                android:id="@+id/password_edit_text"
-                android:layout_width="@dimen/login_edit_text_width"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/email_edit_text"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/login_edit_text_margins"
-                android:background="@drawable/edit_text_background"
-                android:ellipsize="start"
-                android:hint="@string/password_label_text"
-                android:inputType="textPassword"
-                android:padding="@dimen/login_edit_text_padding"
-                android:textSize="@dimen/login_text_size" />
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_edit_text"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/box_text2"
+            android:paddingBottom="10dp"
+            android:text="@string/login_button" />
 
-            <EditText
-                android:id="@+id/re_password_edit_text"
-                android:layout_width="@dimen/login_edit_text_width"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/password_edit_text"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/login_edit_text_margins"
-                android:background="@drawable/edit_text_background"
-                android:ellipsize="start"
-                android:hint="@string/re_password_label_text"
-                android:inputType="textPassword"
-                android:padding="@dimen/login_edit_text_padding"
-                android:textSize="@dimen/login_text_size"
-                android:visibility="gone"
-                tools:visibility="visible" />
+        <Button
+            android:id="@+id/register_fragment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_button"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/box_text2"
+            android:paddingBottom="10dp"
+            android:text="@string/new_register_button" />
 
-            <EditText
-                android:id="@+id/login_edit_text"
-                android:layout_width="@dimen/login_edit_text_width"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/password_edit_text"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="75dp"
-                android:background="@drawable/edit_text_background"
-                android:ellipsize="start"
-                android:hint="@string/login_label_text"
-                android:inputType="text"
-                android:padding="@dimen/login_edit_text_padding"
-                android:textSize="@dimen/login_text_size"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/login_button"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/password_edit_text"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="120dp"
-                android:background="@drawable/button_background"
-                android:text="@string/login_button" />
-
-            <TextView
-                android:id="@+id/register_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/login_button"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:padding="10dp"
-                android:text="@string/register_button"
-                android:textSize="@dimen/login_text_size" />
-
-            <ImageView
-                android:id="@+id/radar_short_image"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_above="@+id/login_edit_text"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/radar_short"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-        </RelativeLayout>
-
-    </ScrollView>
+    </RelativeLayout>
 
 </RelativeLayout>

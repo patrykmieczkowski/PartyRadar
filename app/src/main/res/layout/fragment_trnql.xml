@@ -3,21 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="#FF0"
+    android:background="@color/yellow_main"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:text="New Text"
-        android:textSize="18sp" />
-
     <ScrollView
-        android:layout_below="@id/textView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -30,7 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
             android:text="New Text"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </ScrollView>
 

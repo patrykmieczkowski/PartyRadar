@@ -23,5 +23,5 @@ public interface ServerInterface {
     void logoutUser(Callback<Response> callback);
 
     @POST("/login")
-    void loginUser(@Body User user, Callback<User> callback);
+    void loginUser(@Body User user, Callback<Response> callback);
 }
