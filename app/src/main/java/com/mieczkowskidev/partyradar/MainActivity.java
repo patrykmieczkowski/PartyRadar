@@ -1,12 +1,15 @@
 package com.mieczkowskidev.partyradar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,15 +25,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
 
     private FloatingActionButton addButton;
-    private ImageView imageView;
+    private CoordinatorLayout coordinatorLayout;
+    private ImageView imageView, partyInfoPhoto;
     private RelativeLayout partyInfoLayout;
     private String path;
 
@@ -47,16 +50,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             CreateEventDialog createEventDialog = new CreateEventDialog(this);
+            createEventDialog.setOnDismissListener(this);
             createEventDialog.show();
             loadImage();
         }
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        showSnackbar("Added blabla");
     }
 
     private void getViews() {
 
         addButton = (FloatingActionButton) findViewById(R.id.floating_add_button);
         imageView = (ImageView) findViewById(R.id.imageview);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         partyInfoLayout = (RelativeLayout) findViewById(R.id.party_info_layout);
+        partyInfoPhoto = (ImageView) findViewById(R.id.party_info_photo);
     }
 
     private void setListeners() {
@@ -115,11 +127,17 @@ public class MainActivity extends AppCompatActivity {
         Picasso.with(this).load("file:" + path).resize(500, 500).into(imageView);
     }
 
-    public void showPartyInfoLayout() {
+    public void showPartyInfoLayout(String imageUrl) {
 
         if (partyInfoLayout.getVisibility() == View.GONE) {
             partyInfoLayout.setVisibility(View.VISIBLE);
         }
+
+        Picasso.with(this)
+                .load(Constants.BASE_URL + imageUrl)
+                .error(R.drawable.radar_short)
+                .placeholder(R.drawable.progress_image)
+                .into(partyInfoPhoto);
     }
 
     public void hidePartyInfoLayout() {
@@ -142,6 +160,16 @@ public class MainActivity extends AppCompatActivity {
             addButton.setVisibility(View.GONE);
         }
     }
+
+    public void showSnackbar(String message) {
+
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+    }
+
+
 //    private void setVisibleFragment(int selectedFragment) {
 //        Log.d(TAG, "setVisibleFragment()");
 //

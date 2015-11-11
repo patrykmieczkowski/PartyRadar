@@ -17,8 +17,30 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.mieczkowskidev.partyradar.Deserializer.EventDeserializer;
 import com.mieczkowskidev.partyradar.MainActivity;
+import com.mieczkowskidev.partyradar.Objects.Event;
+import com.mieczkowskidev.partyradar.Objects.User;
 import com.mieczkowskidev.partyradar.R;
+import com.mieczkowskidev.partyradar.RestClient;
+import com.mieczkowskidev.partyradar.ServerInterface;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.converter.ConversionException;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by Patryk Mieczkowski on 2015-11-10.
@@ -29,6 +51,8 @@ public class MapFragment extends SupportMapFragment implements
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     private final static String TAG = MapFragment.class.getSimpleName();
+
+    private HashMap<Marker, Event> markerEventHashMap = new HashMap<>();
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
@@ -50,7 +74,6 @@ public class MapFragment extends SupportMapFragment implements
                 .build();
 
         initListeners();
-        addMarkers();
     }
 
     @Override
@@ -74,6 +97,7 @@ public class MapFragment extends SupportMapFragment implements
                 .getLastLocation(googleApiClient);
 
         initCamera(currentLocation);
+        downloadEvents();
     }
 
     @Override
@@ -112,7 +136,8 @@ public class MapFragment extends SupportMapFragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        ((MainActivity) getActivity()).showPartyInfoLayout();
+
+        ((MainActivity) getActivity()).showPartyInfoLayout(markerEventHashMap.get(marker).getPhoto());
         ((MainActivity) getActivity()).hideFAB();
 
         return false;
@@ -145,27 +170,88 @@ public class MapFragment extends SupportMapFragment implements
 //        getMap().getUiSettings().setZoomControlsEnabled(true);
     }
 
-    private void addMarkers() {
-        Log.d(TAG, "addMarkers()");
+    private void downloadEvents() {
+        Log.d(TAG, "downloadEvents()");
 
-        getMap().addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
-                .position(new LatLng(50.1083610639509, 19.960406720638275))
-                .title("Party party 1"));
+        RestClient restClient = new RestClient();
 
-        getMap().addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
-                .position(new LatLng(50.1089181910328, 19.965937435626984))
-                .title("Party party 2"));
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        getMap().addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
-                .position(new LatLng(50.06186446897023, 19.937465451657772))
-                .title("Main square party!"));
+        String info = "Lat: " + String.valueOf(currentLocation.getLatitude());
+        Log.d(TAG, info);
 
-        getMap().addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
-                .position(new LatLng(50.05021416554237, 19.9314821138978))
-                .title("Mateczny party"));
+        serverInterface.getPosts(currentLocation.getLatitude(), currentLocation.getLongitude(),
+                50, 10, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        Log.d(TAG, "downloadEvents success() called with: response = [" + response.getStatus() + "]");
+
+                        List<Event> list = new ArrayList<>();
+
+                        JsonObject mainObject = jsonElement.getAsJsonObject();
+                        JsonArray eventArray = mainObject.get("posts").getAsJsonArray();
+
+                        for (JsonElement jsonElementoo : eventArray) {
+
+                            int id = jsonElementoo.getAsJsonObject().get("id").getAsInt();
+                            String user = jsonElementoo.getAsJsonObject().get("user").getAsString();
+                            String photo = jsonElementoo.getAsJsonObject().get("photo").getAsString();
+                            String description = jsonElementoo.getAsJsonObject().get("description").getAsString();
+                            Double lat = jsonElementoo.getAsJsonObject().get("lat").getAsDouble();
+                            Double lon = jsonElementoo.getAsJsonObject().get("lon").getAsDouble();
+                            String created = jsonElementoo.getAsJsonObject().get("created").getAsString();
+                            String modified = jsonElementoo.getAsJsonObject().get("modified").getAsString();
+
+                            Event event = new Event(id, user, photo, description, lat, lon, created, modified);
+                            Log.d(TAG, event.toString());
+                            list.add(event);
+                        }
+
+                        addEventMarkers(list);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "downloadEvents failure() called with: " + "error = [" + error + "]");
+
+                    }
+                });
     }
+
+    public void addEventMarkers(List<Event> eventList) {
+        Log.d(TAG, "addEventMarkers() called with: " + "eventList size = [" + eventList.size() + "]");
+
+        for (Event event : eventList) {
+            Marker marker = getMap().addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
+                    .position(new LatLng(event.getLat(), event.getLon()))
+                    .title(event.getDescription() + "\n" + event.getUser()));
+
+            markerEventHashMap.put(marker, event);
+        }
+    }
+
+//    private void addMarkers() {
+//        Log.d(TAG, "addMarkers()");
+//
+//        getMap().addMarker(new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
+//                .position(new LatLng(50.1083610639509, 19.960406720638275))
+//                .title("Party party 1"));
+//
+//        getMap().addMarker(new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
+//                .position(new LatLng(50.1089181910328, 19.965937435626984))
+//                .title("Party party 2"));
+//
+//        getMap().addMarker(new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
+//                .position(new LatLng(50.06186446897023, 19.937465451657772))
+//                .title("Main square party!"));
+//
+//        getMap().addMarker(new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
+//                .position(new LatLng(50.05021416554237, 19.9314821138978))
+//                .title("Mateczny party"));
+//    }
 }
