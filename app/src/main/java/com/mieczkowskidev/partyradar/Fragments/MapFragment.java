@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.Deserializer.EventDeserializer;
 import com.mieczkowskidev.partyradar.MainActivity;
 import com.mieczkowskidev.partyradar.Objects.Event;
@@ -97,6 +98,7 @@ public class MapFragment extends SupportMapFragment implements
                 .getLastLocation(googleApiClient);
 
         initCamera(currentLocation);
+        Constants.myPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         downloadEvents();
     }
 
@@ -168,6 +170,18 @@ public class MapFragment extends SupportMapFragment implements
         getMap().setMyLocationEnabled(true);
         getMap().getUiSettings().setMapToolbarEnabled(true);
 //        getMap().getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    public LatLng getLocations() {
+        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+    }
+
+    public Double getLatitude(){
+        return currentLocation.getLatitude();
+    }
+
+    public Double getLongitude(){
+        return currentLocation.getLongitude();
     }
 
     private void downloadEvents() {

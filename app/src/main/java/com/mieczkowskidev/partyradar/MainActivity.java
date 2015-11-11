@@ -3,6 +3,7 @@ package com.mieczkowskidev.partyradar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,13 +17,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mieczkowskidev.partyradar.Dialogs.CreateEventDialog;
+import com.mieczkowskidev.partyradar.Fragments.MapFragment;
+import com.mieczkowskidev.partyradar.Objects.Event;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 
 public class MainActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
@@ -33,9 +43,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     private FloatingActionButton addButton;
     private CoordinatorLayout coordinatorLayout;
-    private ImageView imageView, partyInfoPhoto;
+    private ImageView partyInfoPhoto;
     private RelativeLayout partyInfoLayout;
     private String path;
+    private CreateEventDialog createEventDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            CreateEventDialog createEventDialog = new CreateEventDialog(this);
+            createEventDialog = new CreateEventDialog(this);
             createEventDialog.setOnDismissListener(this);
             createEventDialog.show();
             loadImage();
@@ -65,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     private void getViews() {
 
         addButton = (FloatingActionButton) findViewById(R.id.floating_add_button);
-        imageView = (ImageView) findViewById(R.id.imageview);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         partyInfoLayout = (RelativeLayout) findViewById(R.id.party_info_layout);
         partyInfoPhoto = (ImageView) findViewById(R.id.party_info_photo);
@@ -124,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     private void loadImage() {
         Log.d(TAG, "loadImage(): " + path);
-        Picasso.with(this).load("file:" + path).resize(500, 500).into(imageView);
     }
 
     public void showPartyInfoLayout(String imageUrl) {
@@ -169,6 +178,53 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         snackbar.show();
     }
 
+    public void createPostOnServer() {
+        Log.d(TAG, "createPostOnServer()");
+
+        RestClient restClient = new RestClient();
+
+        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
+//
+//        File photoFile = new File(path);
+//        TypedFile photoTypedFile = new TypedFile("file:", photoFile);
+
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        Bitmap b = BitmapFactory.decodeFile(path);
+        Bitmap out = Bitmap.createScaledBitmap(b, 300, 400, false);
+
+        File file = new File(dir, "resize.png");
+
+        FileOutputStream fOut;
+        try {
+            fOut = new FileOutputStream(file);
+            out.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            b.recycle();
+            out.recycle();
+        } catch (Exception e) {}
+
+        final File photoFiles = new File(file.getAbsolutePath());
+        TypedFile photoo = new TypedFile("file:",photoFiles);
+
+        serverInterface.createPost(photoo, "party", Constants.myPosition.latitude, Constants.myPosition.longitude,
+                new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        Log.d(TAG, "success() called with: " + "response = [" + response.getStatus() + "], response2 = [" + response2.getStatus() + "]");
+                        createEventDialog.dismiss();
+                        showSnackbar("Success! Added new event");
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "failure() called with: " + "error = [" + error + "]");
+                        createEventDialog.dismiss();
+                        showSnackbar("An error occurred, please try again!");
+                    }
+                });
+
+    }
 
 //    private void setVisibleFragment(int selectedFragment) {
 //        Log.d(TAG, "setVisibleFragment()");

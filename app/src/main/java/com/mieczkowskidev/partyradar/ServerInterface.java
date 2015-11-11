@@ -11,8 +11,11 @@ import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Headers;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Patryk Mieczkowski on 2015-11-08
@@ -37,4 +40,13 @@ public interface ServerInterface {
                   @Query("radius") int radius,
                   @Query("time_offset") int time_offset,
                   Callback<JsonElement> callback);
+
+    @Multipart
+    @Headers("Authorization: Token 7dea74597620aeda66d13d01e895591204f87190")
+    @POST("/submit-post")
+    void createPost(@Part("photo") TypedFile photo,
+                    @Part("description") String description,
+                    @Part("lat") Double lat,
+                    @Part("lon") Double lon,
+                    Callback<Response> callback);
 }
