@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/small_background"
+    tools:context=".LoginActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/login_edit_text_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/login_label_text"
+            android:inputType="text"
+            android:padding="@dimen/login_edit_text_padding"
+            android:textSize="@dimen/login_text_size" />
+
+        <EditText
+            android:id="@+id/email_edit_text_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_edit_text_reg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="@dimen/login_edit_text_margins"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/email_label_text"
+            android:inputType="textEmailAddress"
+            android:padding="@dimen/login_edit_text_padding"
+            android:textSize="@dimen/login_text_size" />
+
+        <EditText
+            android:id="@+id/password_edit_text_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_edit_text_reg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="@dimen/login_edit_text_margins"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/password_label_text"
+            android:inputType="textPassword"
+            android:padding="@dimen/login_edit_text_padding"
+            android:textSize="@dimen/login_text_size" />
+
+        <EditText
+            android:id="@+id/re_password_edit_text_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_edit_text_reg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginRight="@dimen/login_edit_text_left_right_margin"
+            android:layout_marginTop="@dimen/login_edit_text_margins"
+            android:background="@drawable/box_text1"
+            android:ellipsize="start"
+            android:hint="@string/re_password_label_text"
+            android:inputType="textPassword"
+            android:padding="@dimen/login_edit_text_padding"
+            android:textSize="@dimen/login_text_size" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/re_password_edit_text_reg"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/box_text2"
+            android:text="@string/new_register_button" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

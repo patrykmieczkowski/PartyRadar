@@ -1,26 +1,20 @@
 package com.mieczkowskidev.partyradar;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.mieczkowskidev.partyradar.Fragments.RegisterFragment;
 import com.mieczkowskidev.partyradar.Objects.User;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 
 /**
  * A login screen that offers login via email/password.
@@ -37,10 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int VISIBLE = 0;
     private static final int GONE = 1;
 
-    private Button loginButton;
-    private TextView registerButton;
-    private EditText loginEditText, emailEditText, passwordEditText, rePasswordEditText;
-    private ImageView radarShortImage;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getViews();
-        setListeners();
+        startRegisterFragment();
     }
 
     @Override
@@ -56,13 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (MODE == REGISTER) {
             MODE = LOGIN;
-            loginButton.setText(R.string.login_label_text);
-            changeVisibility(loginEditText, GONE);
-            changeVisibility(rePasswordEditText, GONE);
-            changeVisibility(radarShortImage, GONE);
-            changeVisibility(registerButton, VISIBLE);
-            clearEditText();
-            emailEditText.requestFocus();
+            // change to login
         } else {
             super.onBackPressed();
         }
@@ -70,42 +55,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getViews() {
 
-        loginEditText = (EditText) findViewById(R.id.login_edit_text);
-        emailEditText = (EditText) findViewById(R.id.email_edit_text);
-        passwordEditText = (EditText) findViewById(R.id.password_edit_text);
-        rePasswordEditText = (EditText) findViewById(R.id.re_password_edit_text);
-
-        loginButton = (Button) findViewById(R.id.login_button);
-        registerButton = (TextView) findViewById(R.id.register_button);
-        radarShortImage = (ImageView) findViewById(R.id.radar_short_image);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.login_coordinator_layout);
     }
 
-    private void setListeners() {
+    public void showSnackbar(String message) {
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MODE == LOGIN) {
-                    loginFlow();
-                } else {
-                    registerFlow();
-                }
-            }
-        });
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MODE = REGISTER;
-                loginButton.setText(R.string.new_register_button);
-                changeVisibility(loginEditText, VISIBLE);
-                changeVisibility(rePasswordEditText, VISIBLE);
-                changeVisibility(radarShortImage, VISIBLE);
-                changeVisibility(registerButton, GONE);
-                clearEditText();
-                loginEditText.requestFocus();
-            }
-        });
+        snackbar.show();
     }
 
     private void changeVisibility(View view, int visibility) {
@@ -124,173 +82,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void clearEditText() {
-        loginEditText.setText("");
-        loginEditText.setError(null);
-        emailEditText.setText("");
-        emailEditText.setError(null);
-        passwordEditText.setText("");
-        passwordEditText.setError(null);
-        rePasswordEditText.setText("");
-        rePasswordEditText.setError(null);
+    private void startRegisterFragment() {
+        MODE = REGISTER;
+
+        RegisterFragment fragment = new RegisterFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.login_placeholder, fragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
 
     }
 
-    private void loginFlow() {
-        Toast.makeText(this, "Hello login here", Toast.LENGTH_SHORT).show();
-//        loginUser();
-//        logoutUser();
-        startMainActivity();
-    }
-
-    private void registerFlow() {
-        Log.d(TAG, "registerFlow()");
-
-        getDataFromFormula();
-    }
-
-    private void getDataFromFormula() {
-        Log.d(TAG, "getDataFromFormula()");
-
-        boolean cancel = false;
-        View focusView = null;
-
-        if (LoginManager.getEditTextText(rePasswordEditText)) {
-            Log.i(TAG, "Re password is empty");
-            rePasswordEditText.setError(getString(R.string.formula_empty_error));
-            cancel = true;
-            focusView = rePasswordEditText;
-        }
-
-        if (LoginManager.getEditTextText(passwordEditText)) {
-            Log.i(TAG, "Password is empty");
-            passwordEditText.setError(getString(R.string.formula_empty_error));
-            cancel = true;
-            focusView = passwordEditText;
-        }
-
-        if (LoginManager.getEditTextText(emailEditText)) {
-            Log.i(TAG, "Email is empty");
-            emailEditText.setError(getString(R.string.formula_empty_error));
-            cancel = true;
-            focusView = emailEditText;
-        }
-
-        if (LoginManager.getEditTextText(loginEditText)) {
-            Log.i(TAG, "Login is empty");
-            loginEditText.setError(getString(R.string.formula_empty_error));
-            cancel = true;
-            focusView = loginEditText;
-        }
-
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
-            Log.d(TAG, "check password match");
-
-            if (!passwordEditText.getText().toString().equals(rePasswordEditText.getText().toString())) {
-                Log.i(TAG, "Different passwords");
-                passwordEditText.setError(getString(R.string.formula_password_error));
-                rePasswordEditText.setError(getString(R.string.formula_password_error));
-                cancel = true;
-                focusView = passwordEditText;
-            }
-
-            if (cancel) {
-                focusView.requestFocus();
-            } else {
-                Log.d(TAG, "formula is valid!");
-                createUser();
-            }
-        }
-    }
-
-    private void createUser() {
-        Log.d(TAG, "createUser()");
-
-        String username = loginEditText.getText().toString();
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-
-        User user = new User(username, email, password);
-
-        registerUserOnServer(user);
-    }
-
-    private void registerUserOnServer(User user) {
-        Log.d(TAG, "registerUserOnServer()");
-
-        RestClient restClient = new RestClient();
-
-        ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
-
-        serverInterface.registerUser(user, new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                Log.d(TAG, "registerUserOnServer success(): " + response.getStatus() + ", " + response.getReason());
-                Log.d(TAG, "registerUserOnServer success(): " + response.getUrl());
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "registerUserOnServer failure() called with: " + "error = [" + error.getUrl() + "]");
-                Log.e(TAG, "registerUserOnServer failure() called with: " + error.getResponse().getStatus() +
-                        ", " + error.getResponse().getReason() + ", " + error.getResponse().getBody().mimeType());
-
-                String bodyString = new String(((TypedByteArray) error.getBody()).getBytes());
-
-                Log.e(TAG, "registerUserOnServer failure() called with: " + bodyString);
-
-
-            }
-        });
-
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(Constants.BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//
-//        ServerInterface serverInterface = retrofit.create(ServerInterface.class);
-//
-//        Call<Response> call = serverInterface.logoutUser();
-//        call.enqueue(new Callback<Response>() {
-//            @Override
-//            public void onResponse(Response<Response> response, Retrofit retrofit) {
-//                Log.d(TAG, "onResponse registerUserOnServer: " + response.message() + ", " + response.code());
-//                Log.d(TAG, "onResponse registerUserOnServer: " + retrofit.baseUrl().url().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t) {
-//                Log.e(TAG, "onFailure registerUserOnServer " + t.getMessage() + ", " + t.getCause());
-//
-//            }
-//        });
-//        Call<User> call = serverInterface.registerUserRetro(user);
-//        call.enqueue(new Callback<User>() {
-//            @Override
-//            public void onResponse(Response<User> response, Retrofit retrofit) {
-//                Log.d(TAG, "onResponse registerUserOnServer: " + response.message() + ", " + response.code());
-//                Log.d(TAG, "onResponse registerUserOnServer: " + retrofit.baseUrl().url().toString());
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t) {
-//                Log.e(TAG, "onFailure registerUserOnServer " + t.getMessage() + ", " + t.getCause());
-//
-//            }
-//        });
-
-    }
-
-    private void startMainActivity(){
+    private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
-    private void loginUser(){
+    private void loginUser() {
         Log.d(TAG, "loginUser() called with: " + "");
 
         RestClient restClient = new RestClient();
