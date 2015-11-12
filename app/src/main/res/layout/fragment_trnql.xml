@@ -8,14 +8,18 @@
 
     <TextView
         android:id="@+id/location_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_margin="10dp"
         tools:text="My location is here"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toLeftOf="@+id/weather_image"
+        android:layout_toStartOf="@+id/weather_image" />
 
     <View
         android:id="@+id/center_view"
@@ -50,6 +54,6 @@
         android:textSize="16sp"
         android:layout_below="@id/temperature_text"
         android:layout_marginLeft="10dp"
-        tools:text="My location is here" />
+        tools:text="Cloudy" />
 
 </RelativeLayout>

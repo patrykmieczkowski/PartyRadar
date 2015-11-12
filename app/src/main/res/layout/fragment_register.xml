@@ -79,11 +79,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/re_password_edit_text_reg"
-            android:paddingBottom="10dp"
             android:layout_centerInParent="true"
             android:layout_marginTop="50dp"
             android:background="@drawable/box_text2"
+            android:paddingBottom="10dp"
             android:text="@string/new_register_button" />
+
+        <ProgressBar
+            android:id="@+id/register_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/re_password_edit_text_reg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mieczkowskidev.partyradar.LoginActivity;
@@ -33,6 +34,7 @@ public class RegisterFragment extends Fragment {
 
     private Button registerButton;
     private EditText loginEditText, emailEditText, passwordEditText, rePasswordEditText;
+    private ProgressBar registerProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class RegisterFragment extends Fragment {
         rePasswordEditText = (EditText) view.findViewById(R.id.re_password_edit_text_reg);
 
         registerButton = (Button) view.findViewById(R.id.register_button);
+        registerProgressBar = (ProgressBar) view.findViewById(R.id.register_progress_bar);
     }
 
     private void setListeners() {
@@ -177,8 +180,30 @@ public class RegisterFragment extends Fragment {
         registerUserOnServer(user);
     }
 
+    private void startRegisterLoading() {
+
+        if (registerButton.getVisibility() == View.VISIBLE) {
+            registerButton.setVisibility(View.GONE);
+        }
+        if (registerProgressBar.getVisibility() == View.GONE) {
+            registerProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void stopRegisterLoading() {
+
+        if (registerButton.getVisibility() == View.GONE) {
+            registerButton.setVisibility(View.VISIBLE);
+        }
+        if (registerProgressBar.getVisibility() == View.VISIBLE) {
+            registerProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void registerUserOnServer(User user) {
         Log.d(TAG, "registerUserOnServer()");
+
+        startRegisterLoading();
 
         RestClient restClient = new RestClient();
 
@@ -189,7 +214,9 @@ public class RegisterFragment extends Fragment {
             public void success(User user, Response response) {
                 Log.d(TAG, "registerUserOnServer success(): " + response.getStatus() + ", " + response.getReason());
                 Log.d(TAG, "registerUserOnServer success(): " + response.getUrl());
-                showSnackbarInLoginActivity("User created! - zapraszamy dalej");
+                showSnackbarInLoginActivity("User created! - please log in");
+
+                ((LoginActivity) getActivity()).startLoginFragment();
 
             }
 
@@ -203,8 +230,13 @@ public class RegisterFragment extends Fragment {
                     String errorString = String.valueOf(error.getResponse().getStatus())
                             + ", " + String.valueOf(error.getResponse().getReason());
                     Log.e(TAG, "registerUserOnServer failure() called with: " + errorString);
-                    showSnackbarInLoginActivity(getString(R.string.connection_error));
+                    if (error.getResponse().getStatus() == 400) {
+                        showSnackbarInLoginActivity("Something went wrong, check formula again");
+                    } else {
+                        showSnackbarInLoginActivity(getString(R.string.connection_error));
+                    }
                 }
+                stopRegisterLoading();
             }
         });
 

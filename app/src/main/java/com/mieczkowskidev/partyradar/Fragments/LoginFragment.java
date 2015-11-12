@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -36,6 +37,7 @@ public class LoginFragment extends Fragment {
 
     private Button loginButton, registerButton;
     private EditText emailEditText, passwordEditText;
+    private ProgressBar loginProgressBar;
     private TextView titleText;
 
     @Override
@@ -57,6 +59,7 @@ public class LoginFragment extends Fragment {
         registerButton = (Button) view.findViewById(R.id.register_fragment_button);
         loginButton = (Button) view.findViewById(R.id.login_button);
 
+        loginProgressBar = (ProgressBar) view.findViewById(R.id.login_progress_bar);
         titleText = (TextView) view.findViewById(R.id.title_text_login);
 
         Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/timeless_bold.ttf");
@@ -174,8 +177,36 @@ public class LoginFragment extends Fragment {
         loginUserOnServer(user);
     }
 
+    private void startLoginLoading() {
+
+        if (registerButton.getVisibility() == View.VISIBLE) {
+            registerButton.setVisibility(View.GONE);
+        }
+        if (loginButton.getVisibility() == View.VISIBLE) {
+            loginButton.setVisibility(View.GONE);
+        }
+        if (loginProgressBar.getVisibility() == View.GONE) {
+            loginProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void stopLoginLoading() {
+
+        if (registerButton.getVisibility() == View.GONE) {
+            registerButton.setVisibility(View.VISIBLE);
+        }
+        if (loginButton.getVisibility() == View.GONE) {
+            loginButton.setVisibility(View.VISIBLE);
+        }
+        if (loginProgressBar.getVisibility() == View.VISIBLE) {
+            loginProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void loginUserOnServer(User user) {
         Log.d(TAG, "loginUserOnServer()");
+
+        startLoginLoading();
 
         RestClient restClient = new RestClient();
 
@@ -210,6 +241,7 @@ public class LoginFragment extends Fragment {
                     Log.e(TAG, "loginUserOnServer failure() called with: " + errorString);
                     showSnackbarInLoginActivity(getString(R.string.connection_error));
                 }
+                stopLoginLoading();
             }
         });
 
