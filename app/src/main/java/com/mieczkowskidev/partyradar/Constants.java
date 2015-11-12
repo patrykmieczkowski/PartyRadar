@@ -12,5 +12,7 @@ public class Constants {
     public static final int FRAGMENT_MAP = 0;
     public static final int FRAGMENT_CREATE = 1;
 
+    public static String myAddress;
     public static LatLng myPosition;
+
 }

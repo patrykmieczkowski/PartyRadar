@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.MainActivity;
 import com.mieczkowskidev.partyradar.R;
 
@@ -42,6 +43,14 @@ public class CreateEventDialog extends Dialog implements
         progressBar = (ProgressBar) findViewById(R.id.create_event_progress_bar);
         descriptionEdit = (EditText) findViewById(R.id.event_description_edit);
 
+        if (Constants.myAddress != null && !Constants.myAddress.isEmpty()) {
+            String text = Constants.myAddress + " party!";
+            descriptionEdit.setText(text);
+        } else {
+            String text = "Party!";
+            descriptionEdit.setText(text);
+        }
+
         createButton.setOnClickListener(this);
     }
 
@@ -60,13 +69,20 @@ public class CreateEventDialog extends Dialog implements
 //        dismiss();
     }
 
-    private void createEvent(){
+    private void createEvent() {
 
         descriptionEdit.clearFocus();
         createButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        ((MainActivity) activity).createPostOnServer(descriptionEdit.getText().toString());
+        String description;
+        if (descriptionEdit.getText().toString().equals("")) {
+            description = "Party!";
+        } else {
+            description = descriptionEdit.getText().toString();
+        }
+
+        ((MainActivity) activity).createPostOnServer(description);
 
     }
 

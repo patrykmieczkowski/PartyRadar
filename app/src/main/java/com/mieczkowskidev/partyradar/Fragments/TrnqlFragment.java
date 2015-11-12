@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.R;
 import com.mieczkowskidev.partyradar.WeatherManager;
 import com.trnql.smart.activity.ActivityEntry;
@@ -50,13 +51,21 @@ public class TrnqlFragment extends SmartFragment {
     }
 
     @Override
+    protected void smartAddressChange(AddressEntry address) {
+        super.smartAddressChange(address);
+        Log.d(TAG, "smartAddressChange() called with: " + "address = [" + address.toString() + "]");
+        Constants.myAddress = address.toString();
+        String location = address.toString();
+        locationText.setText(location);
+
+    }
+
+    @Override
     protected void smartWeatherChange(WeatherEntry weather) {
         super.smartWeatherChange(weather);
         Log.d(TAG, "smartWeatherChange() called with: " + "weather = [" + weather.getWeatherSummaryAsString() + "]");
-        String location = weather.getAddress();
-        String temperature = String.valueOf(weather.getCurrentTemp());
+        String temperature = String.valueOf(weather.getCurrentTemp()) + "°C";
         String weatherS = weather.getCurrentConditionsDescriptionAsString();
-        locationText.setText(location);
         temperatureText.setText(temperature);
         weatherImage.setImageResource(WeatherManager.getDrawableForWeather(weatherS));
         weatherText.setText(weatherS);

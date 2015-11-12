@@ -178,31 +178,28 @@ public class MapFragment extends SupportMapFragment implements
 //        getMap().getUiSettings().setZoomControlsEnabled(true);
     }
 
-    public LatLng getLocations() {
-        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-    }
+//    public LatLng getLocations() {
+//        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//    }
+//
+//    public Double getLatitude() {
+//        return currentLocation.getLatitude();
+//    }
+//
+//    public Double getLongitude() {
+//        return currentLocation.getLongitude();
+//    }
 
-    public Double getLatitude() {
-        return currentLocation.getLatitude();
-    }
-
-    public Double getLongitude() {
-        return currentLocation.getLongitude();
-    }
-
-    private void downloadEvents() {
+    public void downloadEvents() {
         Log.d(TAG, "downloadEvents()");
 
         RestClient restClient = new RestClient();
 
         ServerInterface serverInterface = restClient.getRestAdapter().create(ServerInterface.class);
 
-        String info = "Lat: " + String.valueOf(currentLocation.getLatitude());
-        Log.d(TAG, info);
-
         String token = LoginManager.getTokenFromShared(getActivity());
         Log.d(TAG, token);
-        serverInterface.getPosts(token, currentLocation.getLatitude(), currentLocation.getLongitude(),
+        serverInterface.getPosts(token, Constants.myPosition.latitude, Constants.myPosition.longitude,
                 50, 10, new Callback<JsonElement>() {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
@@ -243,11 +240,15 @@ public class MapFragment extends SupportMapFragment implements
     public void addEventMarkers(List<Event> eventList) {
         Log.d(TAG, "addEventMarkers() called with: " + "eventList size = [" + eventList.size() + "]");
 
+        getMap().clear();
+        markerEventHashMap.clear();
+
         for (Event event : eventList) {
             Marker marker = getMap().addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.party_marker))
                     .position(new LatLng(event.getLat(), event.getLon()))
-                    .title(event.getDescription() + "\n" + event.getUser()));
+                    .snippet(event.getUser())
+                    .title(event.getDescription()));
 
             markerEventHashMap.put(marker, event);
         }

@@ -14,6 +14,8 @@ public class WeatherManager {
                 return R.drawable.w_rainy;
             case "Rain":
                 return R.drawable.w_rainy;
+            case "Mostly Cloudy":
+                return R.drawable.w_cloudy;
             case "Sunny":
                 return R.drawable.w_sunny;
             default:

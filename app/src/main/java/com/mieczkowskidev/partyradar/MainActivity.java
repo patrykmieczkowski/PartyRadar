@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mieczkowskidev.partyradar.Dialogs.CreateEventDialog;
+import com.mieczkowskidev.partyradar.Fragments.MapFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
