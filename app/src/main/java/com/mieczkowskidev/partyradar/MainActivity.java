@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(Constants.BASE_URL + imageUrl)
-                .error(R.drawable.radar_short)
                 .placeholder(R.drawable.progress_image)
                 .into(partyInfoPhoto);
     }
