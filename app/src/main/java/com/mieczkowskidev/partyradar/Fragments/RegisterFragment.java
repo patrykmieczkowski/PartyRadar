@@ -203,7 +203,7 @@ public class RegisterFragment extends Fragment {
                     String errorString = String.valueOf(error.getResponse().getStatus())
                             + ", " + String.valueOf(error.getResponse().getReason());
                     Log.e(TAG, "registerUserOnServer failure() called with: " + errorString);
-                    showSnackbarInLoginActivity(errorString);
+                    showSnackbarInLoginActivity(getString(R.string.connection_error));
                 }
             }
         });

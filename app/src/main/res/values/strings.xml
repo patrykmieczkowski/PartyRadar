@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PartyRadar</string>
+    <string name="app_name">Join My Party</string>
     
     <!-- Strings related to login -->
     <string name="email_label_text">Email</string>
@@ -14,7 +14,7 @@
     <string name="formula_empty_error">Cannot be empty</string>
     <string name="formula_password_error">Password must match</string>
 
-    <string name="connection_error">Connection error, please check and try again!</string>
+    <string name="connection_error">Connection error, please check it and try again!</string>
 
     <string name="google_maps_api_key">AIzaSyBpe0Q2Y0w2hkvDdj2_i5H3YieE3rW62CI</string>
 

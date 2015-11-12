@@ -3,6 +3,8 @@ package com.mieczkowskidev.partyradar.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mieczkowskidev.partyradar.Constants;
 import com.mieczkowskidev.partyradar.LoginActivity;
 import com.mieczkowskidev.partyradar.LoginManager;
 import com.mieczkowskidev.partyradar.Objects.User;
@@ -23,7 +25,6 @@ import com.mieczkowskidev.partyradar.ServerInterface;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Header;
 import retrofit.client.Response;
 
 /**
@@ -35,6 +36,7 @@ public class LoginFragment extends Fragment {
 
     private Button loginButton, registerButton;
     private EditText emailEditText, passwordEditText;
+    private TextView titleText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class LoginFragment extends Fragment {
         getViews(view);
         setListeners();
         fillFormula();
+
         return view;
     }
 
@@ -53,6 +56,12 @@ public class LoginFragment extends Fragment {
 
         registerButton = (Button) view.findViewById(R.id.register_fragment_button);
         loginButton = (Button) view.findViewById(R.id.login_button);
+
+        titleText = (TextView) view.findViewById(R.id.title_text_login);
+
+        Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/timeless_bold.ttf");
+        titleText.setTypeface(myTypeface);
+        titleText.setShadowLayer(1, 0, 0, Color.BLACK);
     }
 
     private void setListeners() {
@@ -199,7 +208,7 @@ public class LoginFragment extends Fragment {
                     String errorString = String.valueOf(error.getResponse().getStatus())
                             + ", " + String.valueOf(error.getResponse().getReason());
                     Log.e(TAG, "loginUserOnServer failure() called with: " + errorString);
-                    showSnackbarInLoginActivity(errorString);
+                    showSnackbarInLoginActivity(getString(R.string.connection_error));
                 }
             }
         });

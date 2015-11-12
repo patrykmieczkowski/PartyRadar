@@ -1,6 +1,5 @@
 package com.mieczkowskidev.partyradar;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +21,6 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mieczkowskidev.partyradar.Dialogs.CreateEventDialog;
-import com.mieczkowskidev.partyradar.Fragments.MapFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -241,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     public void success(Response response, Response response2) {
                         Log.d(TAG, "success() called with: " + "response = [" + response.getStatus() + "], response2 = [" + response2.getStatus() + "]");
                         createEventDialog.dismiss();
-                        showSnackbar("Success! Added new event");
+                        showSnackbar("Success! Added new party");
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.mieczkowskidev.partyradar.Fragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class TrnqlFragment extends SmartFragment {
         AppData.stopAllServices(getActivity());
     }
 
+
     @Override
     protected void smartAddressChange(AddressEntry address) {
         super.smartAddressChange(address);
@@ -78,6 +80,12 @@ public class TrnqlFragment extends SmartFragment {
         weatherText = (TextView) view.findViewById(R.id.weather_text);
         temperatureText = (TextView) view.findViewById(R.id.temperature_text);
         weatherImage = (ImageView) view.findViewById(R.id.weather_image);
+
+
+        Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/timeless.ttf");
+        locationText.setTypeface(myTypeface);
+        weatherText.setTypeface(myTypeface);
+        temperatureText.setTypeface(myTypeface);
 
     }
 
