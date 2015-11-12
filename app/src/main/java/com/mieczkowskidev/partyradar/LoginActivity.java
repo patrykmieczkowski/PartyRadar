@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -47,9 +48,16 @@ public class LoginActivity extends AppCompatActivity {
         getViews();
         startLoginFragment();
 
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         if (!isOnline()) {
             showAlertNoInternet();
         }
+
+        if (isOnline() && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            showAlertNoGPS();
+        }
+
     }
 
     @Override
@@ -136,25 +144,35 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showAlertNoInternet() {
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("Connection error")
-                .setMessage("Please turn on internet connection and try again!")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please turn on internet connection and try again!")
+                .setCancelable(false)
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void showAlertNoGPS() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         finish();
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .create();
-
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                finish();
-            }
-        });
-
-        alertDialog.show();
-
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }

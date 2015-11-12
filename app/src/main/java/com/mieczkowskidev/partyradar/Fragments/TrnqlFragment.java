@@ -5,9 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mieczkowskidev.partyradar.R;
+import com.mieczkowskidev.partyradar.WeatherManager;
 import com.trnql.smart.activity.ActivityEntry;
 import com.trnql.smart.base.SmartFragment;
 import com.trnql.smart.location.AddressEntry;
@@ -16,13 +18,14 @@ import com.trnql.smart.weather.WeatherEntry;
 import com.trnql.zen.core.AppData;
 
 /**
- * Created by Patryk Mieczkowski on 2015-11-11.
+ * Created by Patryk Mieczkowski on 2015-11-11
  */
 public class TrnqlFragment extends SmartFragment {
 
     private static final String TAG = TrnqlFragment.class.getSimpleName();
 
-    private TextView textView2;
+    private TextView locationText, temperatureText, weatherText;
+    private ImageView weatherImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,42 +50,26 @@ public class TrnqlFragment extends SmartFragment {
     }
 
     @Override
-    protected void smartAddressChange(AddressEntry address) {
-
-        super.smartAddressChange(address);
-
-        Log.d(TAG, address.getCountryCode() + ", " + address.getCountryName());
-    }
-
-    @Override
-    protected void smartActivityChange(ActivityEntry userActivity) {
-        super.smartActivityChange(userActivity);
-        Log.d(TAG, "smartActivityChange() called with: " + "userActivity = [" + userActivity.getActivityString() + "]");
-    }
-
-    @Override
     protected void smartWeatherChange(WeatherEntry weather) {
         super.smartWeatherChange(weather);
         Log.d(TAG, "smartWeatherChange() called with: " + "weather = [" + weather.getWeatherSummaryAsString() + "]");
-        String calaPogoda = "Calosc: " +  weather.getWeatherSummaryAsString();
-        textView2.setText(calaPogoda);
-    }
+        String location = weather.getAddress();
+        String temperature = String.valueOf(weather.getCurrentTemp());
+        String weatherS = weather.getCurrentConditionsDescriptionAsString();
+        locationText.setText(location);
+        temperatureText.setText(temperature);
+        weatherImage.setImageResource(WeatherManager.getDrawableForWeather(weatherS));
+        weatherText.setText(weatherS);
 
-    @Override
-    protected void smartIsHighAccuracy(boolean isHighAcc) {
-        super.smartIsHighAccuracy(isHighAcc);
-        Log.d(TAG, "smartIsHighAccuracy() called with: " + "isHighAcc = [" + isHighAcc + "]");
-    }
-
-    @Override
-    protected void smartLatLngChange(LocationEntry location) {
-        super.smartLatLngChange(location);
-        Log.d(TAG, "smartLatLngChange() called with: " + "location = [" + location.getLatLng().toString() + "]");
     }
 
     private void getViews(View view) {
 
-        textView2 = (TextView) view.findViewById(R.id.textView2);
+        locationText = (TextView) view.findViewById(R.id.location_text);
+        weatherText = (TextView) view.findViewById(R.id.weather_text);
+        temperatureText = (TextView) view.findViewById(R.id.temperature_text);
+        weatherImage = (ImageView) view.findViewById(R.id.weather_image);
+
     }
 
 

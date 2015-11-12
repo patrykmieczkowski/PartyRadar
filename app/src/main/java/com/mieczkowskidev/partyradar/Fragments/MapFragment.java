@@ -97,11 +97,16 @@ public class MapFragment extends SupportMapFragment implements
         currentLocation = LocationServices
                 .FusedLocationApi
                 .getLastLocation(googleApiClient);
-
-        initCamera(currentLocation);
-        Constants.myPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        downloadEvents();
+        if (currentLocation != null) {
+            initCamera(currentLocation);
+            Constants.myPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            downloadEvents();
+        } else {
+            ((MainActivity) getActivity()).showSnackbar("There was a problem with localization. Reset all sensors and try again!");
+        }
     }
+
+
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -177,11 +182,11 @@ public class MapFragment extends SupportMapFragment implements
         return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
     }
 
-    public Double getLatitude(){
+    public Double getLatitude() {
         return currentLocation.getLatitude();
     }
 
-    public Double getLongitude(){
+    public Double getLongitude() {
         return currentLocation.getLongitude();
     }
 

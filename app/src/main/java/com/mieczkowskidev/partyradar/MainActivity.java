@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mieczkowskidev.partyradar.Dialogs.CreateEventDialog;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_TAKE_PHOTO = 1337;
 
     private FloatingActionButton addButton;
     private CoordinatorLayout coordinatorLayout;
@@ -228,7 +229,12 @@ public class MainActivity extends AppCompatActivity {
 
         String token = LoginManager.getTokenFromShared(this);
 
-        serverInterface.createPost(token, photoo, description, Constants.myPosition.latitude, Constants.myPosition.longitude,
+        LatLng position = Constants.myPosition;
+        if (position==null){
+            position = new LatLng(0,0);
+        }
+
+        serverInterface.createPost(token, photoo, description, position.latitude, position.longitude,
                 new Callback<Response>() {
                     @Override
                     public void success(Response response, Response response2) {
